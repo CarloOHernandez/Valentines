@@ -76,9 +76,18 @@
         .nav-item i { font-size: 2.2rem; color: var(--gold); }
         .nav-item span { font-size: 0.85rem; font-weight: 600; color: #666; }
 
-        .gallery-viewport { width: 100%; max-height: 380px; overflow-y: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 10px; }
-        .polaroid { background: white; padding: 8px 8px 24px 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); border-radius: 4px; }
-        .polaroid img { width: 100%; border-radius: 2px; }
+        .gallery-viewport { width: 100%; height: 400px; overflow-y: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 10px; scrollbar-width: none; }
+        .gallery-viewport::-webkit-scrollbar { display: none; }
+        
+        .polaroid { 
+            background: white; 
+            padding: 8px 8px 20px 8px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08); 
+            border-radius: 4px;
+            transition: transform 0.3s ease;
+        }
+        .polaroid:hover { transform: scale(1.05) rotate(0deg) !important; z-index: 5; }
+        .polaroid img { width: 100%; height: 140px; object-fit: cover; border-radius: 2px; background: #eee; }
 
         .env-stage { height: 200px; display: flex; align-items: center; justify-content: center; margin: 20px 0; }
         .envelope { width: 200px; height: 140px; background: var(--primary); position: relative; cursor: pointer; border-radius: 0 0 10px 10px; }
@@ -105,7 +114,7 @@
             font-family: inherit; font-weight: 700; cursor: pointer; transition: var(--transition);
         }
 
-        .btn-outline { background: transparent; border: 2px solid var(--accent); color: var(--accent); padding: 10px 25px; border-radius: 50px; cursor: pointer; font-weight: 600; margin-top: 2rem; }
+        .btn-outline { background: transparent; border: 2px solid var(--accent); color: var(--accent); padding: 10px 25px; border-radius: 50px; cursor: pointer; font-weight: 600; margin-top: 1rem; }
 
         .typewriter-text { min-height: 80px; font-style: italic; color: var(--accent); font-weight: 600; margin: 20px 0; }
 
@@ -221,7 +230,6 @@
                 "And I never want to stop making memories with you."
             ];
 
-            // Use direct media links to avoid Giphy "not available" frames
             const SAD_GIF = "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHpueGZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/OPU6wUKARAztfpcvXc/giphy.gif";
             const HAPPY_GIF = "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/c76IJLufpNUMo/giphy.gif";
 
@@ -239,11 +247,18 @@
 
             const renderGallery = () => {
                 const root = document.getElementById('gallery-root');
-                for (let i = 1; i <= 8; i++) {
+                root.innerHTML = ""; // Clear existing
+                
+                // CHANGE THIS URL TO YOUR REPO INFO
+                const repoBaseUrl = "https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO_NAME/main/";
+
+                for (let i = 1; i <= 17; i++) {
                     const card = document.createElement('div');
                     card.className = 'polaroid';
-                    card.style.transform = `rotate(${Math.random() * 6 - 3}deg)`;
-                    card.innerHTML = `<img src="https://picsum.photos/400/400?random=${i}" alt="Memory">`;
+                    card.style.transform = `rotate(${Math.random() * 8 - 4}deg)`;
+                    
+                    // Creates img tag with your GitHub path: 1.jpg, 2.jpg, etc.
+                    card.innerHTML = `<img src="${repoBaseUrl}${i}.jpg" alt="Memory ${i}" onerror="this.src='https://via.placeholder.com/400?text=Photo+${i}'">`;
                     root.appendChild(card);
                 }
             };
@@ -252,7 +267,7 @@
                 meterVal += 15;
                 const fill = document.getElementById('meter-fill');
                 const app = document.getElementById('app');
-                fill.style.width = Math.min(meterVal, 100) + '%';
+                if(fill) fill.style.width = Math.min(meterVal, 100) + '%';
                 if(meterVal > 70) app.classList.add('shake');
                 if (meterVal >= 110) {
                     app.classList.remove('shake');
@@ -284,30 +299,8 @@
                 const maxX = rect.width - noBtn.offsetWidth;
                 const maxY = rect.height - noBtn.offsetHeight;
                 
-                let newX, newY;
-                let isOverlapping = true;
-
-                while(isOverlapping) {
-                    newX = Math.random() * maxX;
-                    newY = Math.random() * maxY;
-
-                    // Yes Button relative position
-                    const yesX = yesBtn.offsetLeft;
-                    const yesY = yesBtn.offsetTop;
-                    const yesW = yesBtn.offsetWidth;
-                    const yesH = yesBtn.offsetHeight;
-
-                    // Check for collision with "Yes" button area + 20px padding
-                    const padding = 20;
-                    if (!(newX + noBtn.offsetWidth < yesX - padding || 
-                          newX > yesX + yesW + padding || 
-                          newY + noBtn.offsetHeight < yesY - padding || 
-                          newY > yesY + yesH + padding)) {
-                        isOverlapping = true;
-                    } else {
-                        isOverlapping = false;
-                    }
-                }
+                let newX = Math.random() * maxX;
+                let newY = Math.random() * maxY;
                 
                 noBtn.style.position = 'absolute';
                 noBtn.style.left = newX + 'px';
