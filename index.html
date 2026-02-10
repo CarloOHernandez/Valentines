@@ -29,7 +29,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
+            overflow-x: hidden;
             background-image: radial-gradient(circle at 50% 50%, #ffffff 0%, var(--bg-soft) 100%);
         }
 
@@ -87,7 +87,7 @@
             transition: transform 0.3s ease;
         }
         .polaroid:hover { transform: scale(1.05) rotate(0deg) !important; z-index: 5; }
-        .polaroid img { width: 100%; height: 140px; object-fit: cover; border-radius: 2px; background: #eee; }
+        .polaroid img { width: 100%; height: 140px; object-fit: cover; border-radius: 2px; background: #fdf2f4; }
 
         .env-stage { height: 200px; display: flex; align-items: center; justify-content: center; margin: 20px 0; }
         .envelope { width: 200px; height: 140px; background: var(--primary); position: relative; cursor: pointer; border-radius: 0 0 10px 10px; }
@@ -247,18 +247,18 @@
 
             const renderGallery = () => {
                 const root = document.getElementById('gallery-root');
-                root.innerHTML = ""; // Clear existing
+                root.innerHTML = ""; 
                 
-                // CHANGE THIS URL TO YOUR REPO INFO
-                const repoBaseUrl = "https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO_NAME/main/";
+                // UPDATED GITHUB URL
+                const repoBaseUrl = "https://raw.githubusercontent.com/CarloOHernandez/Valentines/main/";
 
                 for (let i = 1; i <= 17; i++) {
                     const card = document.createElement('div');
                     card.className = 'polaroid';
                     card.style.transform = `rotate(${Math.random() * 8 - 4}deg)`;
                     
-                    // Creates img tag with your GitHub path: 1.jpg, 2.jpg, etc.
-                    card.innerHTML = `<img src="${repoBaseUrl}${i}.jpg" alt="Memory ${i}" onerror="this.src='https://via.placeholder.com/400?text=Photo+${i}'">`;
+                    // Creates img tag. If image is missing, it shows a soft red placeholder instead of a broken icon.
+                    card.innerHTML = `<img src="${repoBaseUrl}${i}.JPG" alt="Memory ${i}" onerror="this.src='https://via.placeholder.com/400/fff0f3/ff4d6d?text=Memory+${i}'">`;
                     root.appendChild(card);
                 }
             };
