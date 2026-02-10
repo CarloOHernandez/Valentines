@@ -76,7 +76,11 @@
         .nav-item i { font-size: 2.2rem; color: var(--gold); }
         .nav-item span { font-size: 0.85rem; font-weight: 600; color: #666; }
 
-        .gallery-viewport { width: 100%; height: 400px; overflow-y: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 10px; scrollbar-width: none; }
+        .gallery-viewport { 
+            width: 100%; height: 420px; overflow-y: auto; 
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; 
+            padding: 10px; scrollbar-width: none; 
+        }
         .gallery-viewport::-webkit-scrollbar { display: none; }
         
         .polaroid { 
@@ -86,8 +90,11 @@
             border-radius: 4px;
             transition: transform 0.3s ease;
         }
-        .polaroid:hover { transform: scale(1.05) rotate(0deg) !important; z-index: 5; }
         .polaroid img { width: 100%; height: 140px; object-fit: cover; border-radius: 2px; background: #fdf2f4; }
+        
+        /* Video styling */
+        #video-root .polaroid { grid-column: span 2; }
+        video { width: 100%; border-radius: 4px; background: #000; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 
         .env-stage { height: 200px; display: flex; align-items: center; justify-content: center; margin: 20px 0; }
         .envelope { width: 200px; height: 140px; background: var(--primary); position: relative; cursor: pointer; border-radius: 0 0 10px 10px; }
@@ -135,7 +142,6 @@
         }
 
         .reaction-gif { width: 180px; height: 180px; object-fit: cover; border-radius: 20px; margin-bottom: 15px; border: 4px solid white; box-shadow: var(--shadow-lg); }
-
     </style>
 </head>
 <body data-state="menu">
@@ -188,9 +194,8 @@
 
         <section id="video">
             <h1>Memories in Motion 🎬</h1>
-            <div class="media-container">
-                <iframe width="100%" height="250" src="https://www.youtube.com/embed/9tLglpFAyIg" title="Valentine Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-            </div>
+            <div class="gallery-viewport" id="video-root">
+                </div>
             <button class="btn-outline" onclick="App.setState('menu')">Return to Home</button>
         </section>
 
@@ -227,8 +232,11 @@
                 "And I never want to stop making memories with you."
             ];
 
+            const repoBaseUrl = "https://raw.githubusercontent.com/CarloOHernandez/Valentines/main/";
+            
+            // CUSTOM GIFS FROM GITHUB
             const SAD_GIF = "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHpueGZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/OPU6wUKARAztfpcvXc/giphy.gif";
-            const HAPPY_GIF = "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/c76IJLufpNUMo/giphy.gif";
+            const HAPPY_GIF = `${repoBaseUrl}kawai-budding-pop.gif`;
 
             const spawnHearts = () => {
                 const container = document.getElementById('heart-bg');
@@ -245,19 +253,33 @@
             const renderGallery = () => {
                 const root = document.getElementById('gallery-root');
                 root.innerHTML = ""; 
-                
-                // UPDATED GITHUB URL
-                const repoBaseUrl = "https://raw.githubusercontent.com/CarloOHernandez/Valentines/main/";
-
                 for (let i = 1; i <= 24; i++) {
                     const card = document.createElement('div');
                     card.className = 'polaroid';
                     card.style.transform = `rotate(${Math.random() * 8 - 4}deg)`;
-                    
-                    // Creates img tag. If image is missing, it shows a soft red placeholder instead of a broken icon.
                     card.innerHTML = `<img src="${repoBaseUrl}${i}.JPG" alt="Memory ${i}" onerror="this.src='https://via.placeholder.com/400/fff0f3/ff4d6d?text=Memory+${i}'">`;
                     root.appendChild(card);
                 }
+            };
+
+            const renderVideos = () => {
+                const container = document.getElementById('video-root');
+                container.innerHTML = "";
+                // Specific videos from your image
+                const videoFiles = ['v1.mp4', 'v2.mp4', 'v3.mp4', 'v4.mp4', 'v5.mp4'];
+
+                videoFiles.forEach(vid => {
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'polaroid';
+                    wrapper.style.transform = `rotate(${Math.random() * 6 - 3}deg)`;
+                    wrapper.innerHTML = `
+                        <video controls playsinline>
+                            <source src="${repoBaseUrl}${vid}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    `;
+                    container.appendChild(wrapper);
+                });
             };
 
             const fillMeter = () => {
@@ -291,18 +313,14 @@
                 const noBtn = document.getElementById('noBtn');
                 const yesBtn = document.getElementById('yesBtn');
                 const container = document.getElementById('btn-container');
-                
                 const rect = container.getBoundingClientRect();
                 const maxX = rect.width - noBtn.offsetWidth;
                 const maxY = rect.height - noBtn.offsetHeight;
-                
                 let newX = Math.random() * maxX;
                 let newY = Math.random() * maxY;
-                
                 noBtn.style.position = 'absolute';
                 noBtn.style.left = newX + 'px';
                 noBtn.style.top = newY + 'px';
-                
                 yesScale += 0.15;
                 yesBtn.style.transform = `scale(${yesScale})`;
             };
@@ -351,7 +369,6 @@
                 nextQuest: (step) => {
                     const area = document.getElementById('quest-content');
                     if (!step) step = 2;
-                    
                     if (step === 2) {
                         area.innerHTML = `
                             <h1>KILIG KILIG KILIG</h1>
@@ -378,7 +395,7 @@
                     }
                 },
                 fillMeter, dodgeNo, celebrate, handleNoClick,
-                init: () => { spawnHearts(); renderGallery(); }
+                init: () => { spawnHearts(); renderGallery(); renderVideos(); }
             };
         })();
 
