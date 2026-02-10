@@ -3,32 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Valentines</title>
-    <style>
-        body { font-family: Arial, sans-serif; }
-        .animation { animation: fadeIn 1s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .confetti { position: absolute; width: 100%; height: 100%; pointer-events: none; }
-        /* Add specific styles for "The Key" section animations */
-        .key-section { transition: transform 0.3s ease-in-out; }
-        .key-section:hover { transform: scale(1.05); }
-    </style>
+    <title>Valentine's Day Celebration</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-confetti/1.0.0/js-confetti.min.js"></script>
 </head>
 <body>
-    <h1 class="animation">Happy Valentine's Day!</h1>
-    <section class="key-section">
-        <h2>The Key</h2>
-        <img src="URL_TO_IMPROVED_GIF_1" alt="Improved GIF 1">
-        <img src="URL_TO_IMPROVED_GIF_2" alt="Improved GIF 2">
+    <header>
+        <h1>Happy Valentine's Day!</h1>
+    </header>
+    <section id="giphy-section">
+        <h2>Enjoy these Giphy GIFs!</h2>
+        <img src="https://media.giphy.com/media/1zP2aQzKh20nK/giphy.gif" alt="Giphy GIF 1">
+        <img src="https://media.giphy.com/media/l3q2K6gVLg9mS/giphy.gif" alt="Giphy GIF 2">
     </section>
-    <button id="celebrateBtn">Celebrate!</button>
-    <div class="confetti" id="confetti"></div>
+    <section id="key-section">
+        <h2>The Key to My Heart</h2>
+        <p>Here are some animations to express my love!</p>
+        <button id="love-button">Click me!</button>
+        <div id="confetti-container" style="display:none;"></div>
+    </section>
+    <footer>
+        <p>Made with ❤️ by CarloOHernandez</p>
+    </footer>
     <script>
-        document.getElementById('celebrateBtn').onclick = function() {
-            // Trigger confetti animation
-            let confetti = document.getElementById('confetti');
-            // Implementation of confetti effect goes here
-        };
+        $(document).ready(function() {
+            $('#love-button').on('click', function() {
+                $(this).css('transition', '0.3s').css('transform', 'scale(1.1)');
+                setTimeout(() => {
+                    $(this).css('transform', 'scale(1)');
+                }, 300);
+                const jsConfetti = new JSConfetti();
+                jsConfetti.addConfetti({
+                    confettiColors: [
+                        '#ff0b0b', '#0bff0b', '#0b0bff',
+                        '#ffff0b', '#0bffff', '#ff0bff'
+                    ],
+                });
+            });
+        });
     </script>
 </body>
 </html>
